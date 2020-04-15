@@ -1,15 +1,10 @@
-const getYears = (arr) => {
-  const years = arr.map((obj) => obj.year);
-  return Array.from(new Set(years)).sort((a, b) => b - a);
-};
-
-const getCountries = (arr) => {
-  const countries = arr.map((obj) => obj.country);
-  return Array.from(new Set(countries)).sort((a, b) => b - a);
+const getProps = (arr, prop) => {
+  const props = arr.map((obj) => obj[prop]);
+  return Array.from(new Set(props)).sort((a, b) => b - a);
 };
 
 const restructureArr = (arr) => {
-  const years = getYears(arr);
+  const years = getProps(arr, 'year');
   const restructuredArr = [];
   years.forEach((year) => {
     const el = { year };
@@ -23,15 +18,10 @@ const restructureArr = (arr) => {
 };
 
 const getMaxAmountByYear = (arr) => {
-  const arrByYear = restructureArr(arr);
-  const sumPerYear = arrByYear.map((obj) => {
-    const el = obj;
-    delete el.year;
-    return Object.values(el).reduce((total, num) => total + num);
-  });
+  const sumPerYear = arr.map((obj) => Object.values(obj)
+    .splice(1)
+    .reduce((total, num) => total + num));
   return Math.max(...sumPerYear);
 };
 
-export {
-  getYears, getCountries, restructureArr, getMaxAmountByYear,
-};
+export { getProps, restructureArr, getMaxAmountByYear };
