@@ -24,7 +24,7 @@ const setupDiagram = (data, wrapper) => {
   const margin = {
     top: 100,
     right: 100,
-    bottom: 100,
+    bottom: 50,
     left: 100,
   };
   const locale = {
@@ -194,6 +194,7 @@ const setupDiagram = (data, wrapper) => {
   /* CREATE CHART */
 
   const svg = d3.create('svg')
+    .attr('class', 'd3-chart')
     .attr('width', `${width}`)
     .attr('height', `${height}`)
     .attr('viewBox', [0, 0, width, height]);

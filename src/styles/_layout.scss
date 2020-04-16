@@ -1,0 +1,140 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  color: $color-black;
+}
+
+.intro {
+  padding: 20px;
+  background-color: $color-gray;
+
+  h1 {
+    font-family: 'Oswald', serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 4.5rem;
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-weight: 300;
+    font-size: 1.5rem;
+
+    a {
+      color: $color-black;
+    }
+  }
+}
+
+.d3 {
+  .info-wrapper {
+    width: 50%;
+    margin: 100px auto 50px auto;
+
+    h2 {
+      font-family: "Oswald", serif;
+      font-weight: 500;
+      text-align: center;
+      font-size: 2rem;
+      text-transform: uppercase;
+    }
+
+    hr {
+      width: 100px;
+      border: 3px solid $color-black;
+    }
+
+    .target {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      .icon {
+        width: 20px;
+        margin-right: 10px;
+        &::after {
+          content: '';
+          display: block;
+          width: 100%;
+          height: 0;
+          padding-top: 100%;
+          background-color: $color-goal;
+        }
+      }
+      p {
+        margin: 0;
+        align-self: center;
+        span {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  #d3-wrapper {
+    width: 90vw;
+    height: 0;
+    margin: 0 auto;
+    padding-top: calc(9 / 16 * 100%);
+    position: relative;
+    overflow: hidden;
+
+    .d3-chart {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      .roles-title {
+        font-size: 1.5rem;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        fill: $color-black;
+      }
+
+      .tick {
+        font-size: 0.7rem;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        fill: $color-black;
+
+        line {
+          stroke: #bbbbbb;
+          stroke-width: 0.5;
+        }
+      }
+
+      line.separator {
+        stroke: $color-black;
+        stroke-width: 3;
+      }
+    }
+  }
+
+  .tooltip {
+    padding: 5px 10px;
+    background-color: $color-black;
+    color: $color-white;
+    z-index: 10;
+    position: absolute;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    opacity: 0;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid $color-black;
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+    }
+  }
+}
