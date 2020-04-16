@@ -118,7 +118,7 @@ const setupDiagram = (data, wrapper) => {
       .attr('transform', (year) => `translate(${margin.left}, ${yScale(year) + (yScale.bandwidth() / 2)})`))
     .call(() => g.selectAll('.tick line').attr('x1', width - margin.left - margin.right));
 
-  /* STACKED CHARTS */
+  /* STACKED CHARTS & TOOLTIP */
 
   const colors = d3.scaleOrdinal()
     .domain([getProps([].concat(data.donors, data.recipients), 'country')])
@@ -130,18 +130,33 @@ const setupDiagram = (data, wrapper) => {
   const seriesRight = d3.stack()
     .keys(getProps(data.recipients, 'country'))(recipients);
 
+  const tooltip = d3.select(wrapper).append('div')
+    .attr('class', 'tooltip');
+
   const chartLeft = (g) => g
     .selectAll('g')
     .data(seriesLeft)
     .join('g')
     .attr('fill', (d) => colors(d.key))
     .selectAll('rect')
-    .data((d) => d)
+    .data((d) => d.map((el) => Object.assign(el, { key: d.key })))
     .join('rect')
     .attr('x', (d) => xScaleLeft(d[1]))
     .attr('y', (d) => yScale(d.data.year))
     .attr('width', (d) => xScaleLeft(d[0]) - xScaleLeft(d[1]) || 0)
-    .attr('height', yScale.bandwidth());
+    .attr('height', yScale.bandwidth())
+    .on('mouseover', (d) => {
+      tooltip
+        .html(d.key)
+        .style('left', `${xScaleLeft(d[1]) + ((xScaleLeft(d[0]) - xScaleLeft(d[1])) / 2)}px`)
+        .style('transform', 'translate(-50%, 0)')
+        .style('top', `${yScale(d.data.year) + yScale.bandwidth()}px`)
+        .style('opacity', 1);
+    })
+    .on('mouseout', () => {
+      tooltip
+        .style('opacity', 0);
+    });
 
   const chartRight = (g) => g
     .selectAll('g')
@@ -149,12 +164,24 @@ const setupDiagram = (data, wrapper) => {
     .join('g')
     .attr('fill', (d) => colors(d.key))
     .selectAll('rect')
-    .data((d) => d)
+    .data((d) => d.map((el) => Object.assign(el, { key: d.key })))
     .join('rect')
     .attr('x', (d) => xScaleRight(d[0]))
     .attr('y', (d) => yScale(d.data.year))
     .attr('width', (d) => xScaleRight(d[1]) - xScaleRight(d[0]) || 0)
-    .attr('height', yScale.bandwidth());
+    .attr('height', yScale.bandwidth())
+    .on('mouseover', (d) => {
+      tooltip
+        .html(d.key)
+        .style('left', `${xScaleRight(d[0]) + ((xScaleRight(d[1]) - xScaleRight(d[0])) / 2)}px`)
+        .style('transform', 'translate(-50%, 0)')
+        .style('top', `${yScale(d.data.year) + yScale.bandwidth()}px`)
+        .style('opacity', 1);
+    })
+    .on('mouseout', () => {
+      tooltip
+        .style('opacity', 0);
+    });
 
   /* SEPARATOR */
 
