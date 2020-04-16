@@ -28,7 +28,7 @@ const setupDiagram = (data, wrapper) => {
     left: 100,
   };
   const locale = {
-    decimal: ',',
+    decimal: '.',
     thousands: '\'',
     grouping: [3],
     currency: ['$', ''],
@@ -61,11 +61,12 @@ const setupDiagram = (data, wrapper) => {
   const xAxisLeft = (g) => g
     .attr('transform', `translate(0, ${margin.top})`)
     .call(d3.axisTop(xScaleLeft)
-      .ticks(5)
+      .ticks(10)
       .tickFormat(d3.format('$,'))
       .tickSize(0)
       .tickPadding(10))
     .call(() => g.select('.domain').remove())
+    .call(() => g.selectAll('.tick:nth-child(even) text').remove())
     .call(() => g.selectAll('.tick line')
       .attr('y1', height - margin.top - margin.bottom))
     .call(() => g.append('text')
@@ -74,16 +75,17 @@ const setupDiagram = (data, wrapper) => {
       .attr('x', xScaleLeft(xValue()))
       .attr('y', -margin.top / 2)
       .attr('class', 'roles-title')
-      .text('Donors'));
+      .text('Donators'));
 
   const xAxisRight = (g) => g
     .attr('transform', `translate(0, ${margin.top})`)
     .call(d3.axisTop(xScaleRight)
-      .ticks(5)
+      .ticks(10)
       .tickFormat(d3.format('$,'))
       .tickSize(0)
       .tickPadding(10))
     .call(() => g.select('.domain').remove())
+    .call(() => g.selectAll('.tick:nth-child(even) text').remove())
     .call(() => g.selectAll('.tick line')
       .attr('y1', height - margin.top - margin.bottom))
     .call(() => g.append('text')
@@ -111,15 +113,16 @@ const setupDiagram = (data, wrapper) => {
     .call(d3.axisLeft(yScale)
       .tickSize(0)
       .tickPadding(10))
-    .call(() => g.select('.domain')
-      .attr('transform', `translate(${width / 2},0)`))
-    .call(() => g.selectAll('.tick')
-      .data(yValues())
+    .call(() => g.select('.domain').remove())
+    .call(() => g.selectAll('.tick').data(yValues())
       .attr('transform', (year) => `translate(${margin.left}, ${yScale(year) + (yScale.bandwidth() / 2)})`))
-    .call(() => g.selectAll('.tick line')
-      .attr('x1', width - margin.left - margin.right));
+    .call(() => g.selectAll('.tick line').attr('x1', width - margin.left - margin.right));
 
   /* STACKED CHARTS */
+
+  const colors = d3.scaleOrdinal()
+    .domain([getProps([].concat(data.donors, data.recipients), 'country')])
+    .range(d3.schemeSpectral[11]);
 
   const seriesLeft = d3.stack()
     .keys(getProps(data.donors, 'country'))(donors);
@@ -131,7 +134,7 @@ const setupDiagram = (data, wrapper) => {
     .selectAll('g')
     .data(seriesLeft)
     .join('g')
-    .attr('fill', 'green')
+    .attr('fill', (d) => colors(d.key))
     .selectAll('rect')
     .data((d) => d)
     .join('rect')
@@ -144,7 +147,7 @@ const setupDiagram = (data, wrapper) => {
     .selectAll('g')
     .data(seriesRight)
     .join('g')
-    .attr('fill', 'red')
+    .attr('fill', (d) => colors(d.key))
     .selectAll('rect')
     .data((d) => d)
     .join('rect')
@@ -152,6 +155,14 @@ const setupDiagram = (data, wrapper) => {
     .attr('y', (d) => yScale(d.data.year))
     .attr('width', (d) => xScaleRight(d[1]) - xScaleRight(d[0]) || 0)
     .attr('height', yScale.bandwidth());
+
+  /* SEPARATOR */
+
+  const verticalSeparator = (g) => g
+    .attr('class', 'separator')
+    .attr('y1', margin.top)
+    .attr('y2', height - margin.bottom)
+    .attr('transform', `translate(${xScaleLeft(0)}, 0)`);
 
   /* CREATE CHART */
 
@@ -174,6 +185,9 @@ const setupDiagram = (data, wrapper) => {
 
   svg.append('g')
     .call(chartRight);
+
+  svg.append('line')
+    .call(verticalSeparator);
 
   return svg.node();
 };
