@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { getProps, restructureArr, getMaxAmountByYear } from './data-manipulations';
+import { getProps, sortArrByYear, getMaxAmountByYear } from './data-manipulations';
 
 const fetchData = () => Promise.all([
   d3.csv('data/donors.csv', (data) => ({
@@ -22,15 +22,22 @@ const setupDiagram = (data, wrapper) => {
   const width = wrapper.offsetWidth;
   const height = wrapper.offsetHeight;
   const margin = {
-    top: 50,
+    top: 100,
     right: 100,
-    bottom: 50,
+    bottom: 100,
     left: 100,
   };
+  const locale = {
+    decimal: ',',
+    thousands: '\'',
+    grouping: [3],
+    currency: ['$', ''],
+  };
 
-  const donors = restructureArr(data.donors);
+  d3.formatDefaultLocale(locale);
 
-  const recipients = restructureArr(data.recipients);
+  const donors = sortArrByYear(data.donors);
+  const recipients = sortArrByYear(data.recipients);
 
   /* X-AXIS */
 
@@ -55,15 +62,37 @@ const setupDiagram = (data, wrapper) => {
     .attr('transform', `translate(0, ${margin.top})`)
     .call(d3.axisTop(xScaleLeft)
       .ticks(5)
-      .tickFormat(d3.format('~s'))
-      .tickSizeOuter(0));
+      .tickFormat(d3.format('$,'))
+      .tickSize(0)
+      .tickPadding(10))
+    .call(() => g.select('.domain').remove())
+    .call(() => g.selectAll('.tick line')
+      .attr('y1', height - margin.top - margin.bottom))
+    .call(() => g.append('text')
+      .attr('text-anchor', 'start')
+      .attr('alignment-baseline', 'alphabetic')
+      .attr('x', xScaleLeft(xValue()))
+      .attr('y', -margin.top / 2)
+      .attr('class', 'roles-title')
+      .text('Donors'));
 
   const xAxisRight = (g) => g
     .attr('transform', `translate(0, ${margin.top})`)
     .call(d3.axisTop(xScaleRight)
       .ticks(5)
-      .tickFormat(d3.format('~s'))
-      .tickSizeOuter(0));
+      .tickFormat(d3.format('$,'))
+      .tickSize(0)
+      .tickPadding(10))
+    .call(() => g.select('.domain').remove())
+    .call(() => g.selectAll('.tick line')
+      .attr('y1', height - margin.top - margin.bottom))
+    .call(() => g.append('text')
+      .attr('text-anchor', 'start')
+      .attr('alignment-baseline', 'alphabetic')
+      .attr('x', xScaleRight(0))
+      .attr('y', -margin.top / 2)
+      .attr('class', 'roles-title')
+      .text('Recipients'));
 
   /* Y-AXIS */
 
@@ -74,13 +103,21 @@ const setupDiagram = (data, wrapper) => {
 
   const yScale = d3.scaleBand()
     .domain(yValues())
-    .range([margin.top, height - margin.bottom]);
+    .range([margin.top, height - margin.bottom])
+    .paddingInner(0.4)
+    .paddingOuter(0.4);
 
   const yAxis = (g) => g
     .call(d3.axisLeft(yScale)
-      .tickSizeOuter(0))
-    .call(() => g.select('.domain').attr('transform', `translate(${width / 2},0)`))
-    .call(() => g.selectAll('.tick').data(yValues()).attr('transform', (year) => `translate(${margin.left - 20}, ${yScale(year) + (yScale.bandwidth() / 2)})`));
+      .tickSize(0)
+      .tickPadding(10))
+    .call(() => g.select('.domain')
+      .attr('transform', `translate(${width / 2},0)`))
+    .call(() => g.selectAll('.tick')
+      .data(yValues())
+      .attr('transform', (year) => `translate(${margin.left}, ${yScale(year) + (yScale.bandwidth() / 2)})`))
+    .call(() => g.selectAll('.tick line')
+      .attr('x1', width - margin.left - margin.right));
 
   /* STACKED CHARTS */
 
@@ -94,6 +131,7 @@ const setupDiagram = (data, wrapper) => {
     .selectAll('g')
     .data(seriesLeft)
     .join('g')
+    .attr('fill', 'green')
     .selectAll('rect')
     .data((d) => d)
     .join('rect')
@@ -106,6 +144,7 @@ const setupDiagram = (data, wrapper) => {
     .selectAll('g')
     .data(seriesRight)
     .join('g')
+    .attr('fill', 'red')
     .selectAll('rect')
     .data((d) => d)
     .join('rect')

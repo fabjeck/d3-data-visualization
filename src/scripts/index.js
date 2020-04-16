@@ -10,4 +10,3 @@ const init = async () => {
 };
 
 window.addEventListener('load', init);
-window.addEventListener('resize', setupDiagram);

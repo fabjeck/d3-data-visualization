@@ -10,3 +10,17 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+.roles-title {
+  font-size: 1.5rem;
+  fill: #000000;
+}
+
+.tick {
+  font-size: 0.7rem;
+  fill: #000000;
+  line {
+    stroke: #bbbbbb;
+    stroke-width: 0.5;
+  }
+}
