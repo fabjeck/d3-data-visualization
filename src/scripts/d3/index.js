@@ -18,7 +18,7 @@ const fetchData = () => Promise.all([
   recipients: files[1],
 }));
 
-const setupDiagram = (data, wrapper) => {
+const setupInfographic = (data, wrapper) => {
   const width = wrapper.offsetWidth;
   const height = wrapper.offsetHeight;
   const margin = {
@@ -220,4 +220,4 @@ const setupDiagram = (data, wrapper) => {
   return svg.node();
 };
 
-export { fetchData, setupDiagram };
+export { fetchData, setupInfographic };
