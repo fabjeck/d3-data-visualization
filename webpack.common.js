@@ -26,6 +26,17 @@ module.exports = {
           'file-loader',
         ],
       },
+      {
+        test: /\.(csv|tsv)$/,
+        use: [
+          {
+            loader: 'csv-loader',
+            options: {
+              header: true,
+            },
+          },
+        ],
+      },
     ],
   },
   plugins: [

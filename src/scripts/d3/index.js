@@ -1,22 +1,23 @@
 import * as d3 from 'd3';
 
+import donorsCSV from '../../data/donors.csv';
+import recipientsCSV from '../../data/recipients.csv';
 import { getProps, sortArrByYear, getMaxAmountByYear } from './data-manipulations';
 
-const fetchData = () => Promise.all([
-  d3.csv('data/donors.csv', (data) => ({
+const fetchData = () => {
+  const obj = {};
+  obj.donors = donorsCSV.map((data) => ({
     country: String(data.Country),
     year: Number(data.Year),
     amount: Number(data.Donation.replace(/\D/g, '')),
-  })),
-  d3.csv('data/recipients.csv', (data) => ({
+  }));
+  obj.recipients = recipientsCSV.map((data) => ({
     country: String(data.Country),
     year: Number(data.Year),
     amount: Number(data.Receiving.replace(/\D/g, '')),
-  })),
-]).then((files) => ({
-  donors: files[0],
-  recipients: files[1],
-}));
+  }));
+  return obj;
+};
 
 const setupInfographic = (data, wrapper) => {
   const width = wrapper.offsetWidth;

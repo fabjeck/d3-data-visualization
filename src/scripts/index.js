@@ -8,7 +8,7 @@ let windowWidth = window.innerWidth;
 const debounce = (func) => {
   let resizeTimer;
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(func, 500);
+  resizeTimer = setTimeout(func, 250);
 };
 
 const update = (data) => {
@@ -21,8 +21,8 @@ const update = (data) => {
   });
 };
 
-const init = async () => {
-  const data = await fetchData();
+const init = () => {
+  const data = fetchData();
   d3Wrapper.append(setupInfographic(data, d3Wrapper));
   window.addEventListener('resize', () => { update(data); });
 };
