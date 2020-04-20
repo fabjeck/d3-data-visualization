@@ -148,7 +148,9 @@ const setupInfographic = (data, wrapper) => {
     .attr('height', yScale.bandwidth())
     .on('mouseover', (d) => {
       tooltip
-        .html(d.key)
+        .html(`
+        <p>${d.key}</p>
+        <p>${d3.format('$,')(d.data[d.key])}</p>`)
         .style('left', `${xScaleLeft(d[1]) + ((xScaleLeft(d[0]) - xScaleLeft(d[1])) / 2)}px`)
         .style('transform', 'translate(-50%, 0)')
         .style('top', `${yScale(d.data.year) + yScale.bandwidth()}px`)
@@ -173,7 +175,9 @@ const setupInfographic = (data, wrapper) => {
     .attr('height', yScale.bandwidth())
     .on('mouseover', (d) => {
       tooltip
-        .html(d.key)
+        .html(`
+        <p>${d.key}</p>
+        <p>${d3.format('$,')(d.data[d.key])}</p>`)
         .style('left', `${xScaleRight(d[0]) + ((xScaleRight(d[1]) - xScaleRight(d[0])) / 2)}px`)
         .style('transform', 'translate(-50%, 0)')
         .style('top', `${yScale(d.data.year) + yScale.bandwidth()}px`)
