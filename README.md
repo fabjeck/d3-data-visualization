@@ -1,4 +1,4 @@
-# D3 Data Visualization #
+# d3-data-visualization #
 
 This project was implemented as part of the study module __Studio Information Aesthetics & Engineering__.
 
