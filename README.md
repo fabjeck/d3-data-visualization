@@ -1,6 +1,8 @@
-# d3-data-visualization #
+# D3 Data Visualization #
 
-This project was implemented as part of the study module __Studio Information Aesthetics & Engineering__.
+HSLU Digital Ideation - FS2020
+
+**Studio Information Aesthetics & Engineering**
 
 [Visit on Netlify](https://un-sdg-d3.netlify.app/)
 
